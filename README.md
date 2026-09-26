@@ -57,6 +57,21 @@ backend/src/routes, controllers, services, models, repositories, middlewares, co
 - DeviceCalibrationStatus: constants/DeviceCalibrationStatus、types/DeviceCalibrationStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
 - PlanStatus: constants/PlanStatus、types/PlanStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
 - CertificateResult: constants/CertificateResult、types/CertificateResult、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
+- CertificateStatus: constants/CertificateStatus、types/CertificateStatus、models/CalibrationCertificate、constructors/CalibrationCertificateDtoFactory、services/CalibrationCertificateService（替换登记/撤销判定）、utils/formatters（`formatCertificateStatus` 状态文案）、validators、种子数据均有引用。
+
+## 证书替换接口
+
+当校准结论填错或机构撤回原证书时使用，不改变设备按证书判定有效期的既有规则：
+
+- `POST /api/calibration-certificate/{id}/replace`（角色：admin / quality_manager / calibrator）
+- 请求体：`{ certificate_no, result_status, valid_until, file_path, issued_by, device_id?, plan_id? }`（`device_id` 缺省取原证书设备；`plan_id` 缺省沿用原证书计划）
+- 登记条件（任一不满足则 4xx，原证书与设备状态不变）：
+  1. 原证书存在且状态为 `ACTIVE`；
+  2. 新证书与原证书属于同一台设备；
+  3. 新证书 `valid_until` 严格晚于原证书 `valid_until`。
+- 成功后：登记新证书（`ACTIVE`）→ 原证书标记 `REVOKED`（历史保留不删除）→ 设备 `valid_until`/`status` 采用新证书日期；校准计划与历史证书均保留。
+- 并发：同一原证书并发替换仅一次成功，其余返回 `409 CERTIFICATE_REPLACE_CONFLICT` / `CERTIFICATE_NOT_ACTIVE`。
+- 响应：`{ original_certificate, replacement_certificate, device }`；原 `GET /api/calibration-certificate/` 列表行为不变。
 
 ## 为什么会牵一发动全身
 
