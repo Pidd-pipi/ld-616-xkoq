@@ -1,1 +1,1 @@
-import { measuringDeviceRepository } from "../repositories/MeasuringDeviceRepository"; export const measuringDeviceService = { list: () => measuringDeviceRepository.findAll(), create: (row: unknown) => measuringDeviceRepository.save(row) };
+import { measuringDeviceRepository } from "../repositories/MeasuringDeviceRepository"; import type { MeasuringDevice } from "../models/MeasuringDevice"; export const measuringDeviceService = { list: () => measuringDeviceRepository.findAll(), create: (row: Omit<MeasuringDevice, "id">) => measuringDeviceRepository.save(row) };

@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS measuring_device (
   accuracy_level TEXT,
   owner_dept TEXT,
   calibration_cycle_days TEXT,
-  status TEXT
+  status TEXT,
+  valid_until TEXT
 );
 
 CREATE TABLE IF NOT EXISTS calibration_plan (
@@ -28,7 +29,8 @@ CREATE TABLE IF NOT EXISTS calibration_certificate (
   result_status TEXT,
   valid_until TEXT,
   file_path TEXT,
-  issued_by TEXT
+  issued_by TEXT,
+  status TEXT
 );
 
 CREATE TABLE IF NOT EXISTS calibration_vendor (

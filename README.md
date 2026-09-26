@@ -14,6 +14,27 @@ cp .env.example .env && docker compose up -d
 
 后端健康检查：<http://localhost:21116/health>
 
+### 证书替换接口
+
+`POST /api/calibration-certificate/{id}/replace`
+
+用于证书结论填错或机构撤回后的换证登记。规则：
+
+- 原证书必须处于 `ACTIVE`（未撤销）状态；
+- 新证书 `device_id` 必须与原证书设备一致；
+- 新证书 `valid_until` 必须晚于原证书失效日；
+- 登记成功后原证书标记为 `REVOKED`，设备 `valid_until` 采用新证书日期，校准计划与历史证书全部保留；
+- 同一证书的并发替换只有一个请求成功，失败时原证书与设备状态不变；
+- 响应包含 `old_certificate`、`new_certificate` 和设备当前状态；`GET /api/calibration-certificate` 列表继续可用。
+
+```bash
+curl -X POST http://localhost:21116/api/calibration-certificate/1/replace \
+  -H 'Content-Type: application/json' \
+  -d '{"device_id":1,"certificate_no":"CERT-2026-0009","result_status":"PASS","valid_until":"2027-06-30","file_path":"/files/cert-2026-0009.pdf","issued_by":"vendor name 1"}'
+```
+
+错误码：`CERT_NOT_FOUND`(404)、`CERT_NOT_REPLACEABLE`(409)、`CERT_REPLACE_CONFLICT`(409)、`CERT_DEVICE_MISMATCH`(400)、`CERT_VALID_UNTIL_NOT_LATER`(400)、`VALIDATION_FAILED`(400)。
+
 
 ## 本地开发方式
 
@@ -56,7 +77,8 @@ backend/src/routes, controllers, services, models, repositories, middlewares, co
 
 - DeviceCalibrationStatus: constants/DeviceCalibrationStatus、types/DeviceCalibrationStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
 - PlanStatus: constants/PlanStatus、types/PlanStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
-- CertificateResult: constants/CertificateResult、types/CertificateResult、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
+- CertificateResult: constants/CertificateResult、types/CertificateResult、constructors、logTemplates、errorMessages、validators/certificateReplaceValidator、筛选器、展示组件/控制器均有引用。
+- CertificateStatus（ACTIVE/REVOKED）: constants/CertificateStatus、models/CalibrationCertificate、seed、repositories/CalibrationCertificateRepository、services/CalibrationCertificateService、constructors/CalibrationCertificateDtoFactory、database/init.sql 均有引用。
 
 ## 为什么会牵一发动全身
 

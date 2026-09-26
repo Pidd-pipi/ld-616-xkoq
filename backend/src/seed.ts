@@ -7,8 +7,9 @@ export const seed = {
       "device_type": "DUE_SOON",
       "accuracy_level": "LOW",
       "owner_dept": "owner dept 1",
-      "calibration_cycle_days": "calibration cycle days 1",
-      "status": "DUE_SOON"
+      "calibration_cycle_days": 365,
+      "status": "VALID",
+      "valid_until": "2026-12-31"
     },
     {
       "id": 2,
@@ -17,8 +18,9 @@ export const seed = {
       "device_type": "OVERDUE",
       "accuracy_level": "MEDIUM",
       "owner_dept": "owner dept 2",
-      "calibration_cycle_days": "calibration cycle days 2",
-      "status": "OVERDUE"
+      "calibration_cycle_days": 180,
+      "status": "VALID",
+      "valid_until": "2026-06-30"
     },
     {
       "id": 3,
@@ -27,8 +29,9 @@ export const seed = {
       "device_type": "CALIBRATING",
       "accuracy_level": "HIGH",
       "owner_dept": "owner dept 3",
-      "calibration_cycle_days": "calibration cycle days 3",
-      "status": "VALID"
+      "calibration_cycle_days": 90,
+      "status": "VALID",
+      "valid_until": "2025-06-30"
     }
   ],
   "calibrationPlan": [
@@ -68,31 +71,34 @@ export const seed = {
       "id": 1,
       "device_id": 1,
       "plan_id": 1,
-      "certificate_no": "certificate no 1",
-      "result_status": "DUE_SOON",
-      "valid_until": "valid until 1",
-      "file_path": "file path 1",
-      "issued_by": "issued by 1"
+      "certificate_no": "CERT-2025-0001",
+      "result_status": "PASS",
+      "valid_until": "2026-12-31",
+      "file_path": "/files/cert-2025-0001.pdf",
+      "issued_by": "vendor name 1",
+      "status": "ACTIVE"
     },
     {
       "id": 2,
       "device_id": 2,
       "plan_id": 2,
-      "certificate_no": "certificate no 2",
-      "result_status": "OVERDUE",
-      "valid_until": "valid until 2",
-      "file_path": "file path 2",
-      "issued_by": "issued by 2"
+      "certificate_no": "CERT-2025-0002",
+      "result_status": "LIMITED_PASS",
+      "valid_until": "2026-06-30",
+      "file_path": "/files/cert-2025-0002.pdf",
+      "issued_by": "vendor name 2",
+      "status": "ACTIVE"
     },
     {
       "id": 3,
       "device_id": 3,
       "plan_id": 3,
-      "certificate_no": "certificate no 3",
-      "result_status": "VALID",
-      "valid_until": "valid until 3",
-      "file_path": "file path 3",
-      "issued_by": "issued by 3"
+      "certificate_no": "CERT-2024-0003",
+      "result_status": "FAIL",
+      "valid_until": "2025-06-30",
+      "file_path": "/files/cert-2024-0003.pdf",
+      "issued_by": "vendor name 3",
+      "status": "REVOKED"
     }
   ],
   "calibrationVendor": [
